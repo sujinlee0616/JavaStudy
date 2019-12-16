@@ -2,14 +2,11 @@
  * 	ex1) for문과 while문을 사용하여 구구단을 출력하라. 
  * 
 */
-
+import java.util.Scanner;
 class A{
-	
-}
-
-{
 	static int aa=10;
 }
+
 public class 이중반복문4 {
 
 	public static void main(String[] args) {
