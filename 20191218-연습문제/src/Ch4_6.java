@@ -1,5 +1,5 @@
 
-public class Ch4_정리문제6 {
+public class Ch4_6 {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
