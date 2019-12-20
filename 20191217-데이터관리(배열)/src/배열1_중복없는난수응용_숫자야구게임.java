@@ -33,11 +33,12 @@
 */
 import java.util.Scanner;
 /*
- * 	1. 중복없는 난수 발생
+ * 	1. 중복없는 난수 발생 ==> com[]
  * 	===============
- * 	2. 사용자 입력
- * 	3. 할때마다 힌트
- * 	4. 종료여부 확인
+ * 	2. 사용자 입력 ==> user[]
+ * 		비교 ==> com[] user[]
+ * 	3. 힌트 ==> s b 
+ * 	4. 종료여부 확인 s
  * 	5. 3S => 종료한다. 
  *  =============== 반복 (횟수지정X ==> while문) 
 */
@@ -48,7 +49,7 @@ import java.util.Scanner;
  * 			메소드
  * 		======================= 클래스 
 */
-public class 배열 {
+public class 배열1_중복없는난수응용_숫자야구게임 {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

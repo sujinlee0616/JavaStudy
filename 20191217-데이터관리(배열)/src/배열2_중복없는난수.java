@@ -4,9 +4,9 @@
  * ===========
  * =====
  * 난수발생 ==> 이 배열 안에 없는 숫자가 나오면 저장  
- * =====
+ * ===== 
 */
-public class 배열2 {
+public class 배열2_중복없는난수 {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

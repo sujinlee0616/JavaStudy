@@ -30,7 +30,7 @@ public class 배열11_내림차순오름차순 {
 		System.out.println();
 		
 		//오름차순으로 정렬
-		for(int i=0;i<5;i++) {
+		for(int i=0;i<4;i++) {
 			for(int j=i+1;j<5;j++) {
 				if(arr[i]>arr[j]) {
 					//교환할 때 바로 두 개 교환 안되니까 temp에다가 하나 보관하면 서로 값 바꿀 수 있다.  
