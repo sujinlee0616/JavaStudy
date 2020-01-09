@@ -41,7 +41,7 @@ package com.sist.exception1;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
-public class MainClass2 extends JFrame implements ActionListener {
+public class MainClass2_숫자맞추기게임 extends JFrame implements ActionListener {
 	JTextArea ta;
 	JTextField tf;
 	JButton b1,b2;
@@ -50,7 +50,7 @@ public class MainClass2 extends JFrame implements ActionListener {
 	int[] com=new int[3];
 	int[] user=new int[3];
 	int s,b;
-	public MainClass2() {
+	public MainClass2_숫자맞추기게임() {
 		ta=new JTextArea();
 		ta.setEditable(false);
 		
@@ -83,7 +83,7 @@ public class MainClass2 extends JFrame implements ActionListener {
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		new MainClass2();
+		new MainClass2_숫자맞추기게임();
 	}
 	// 난수를 발생하는 메소드
 	public void getRand() {

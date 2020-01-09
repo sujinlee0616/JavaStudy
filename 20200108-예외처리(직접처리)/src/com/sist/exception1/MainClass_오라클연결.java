@@ -1,7 +1,7 @@
 package com.sist.exception1;
 import java.sql.*; //오라클 연결 => CheckException
 
-public class MainClass {
+public class MainClass_오라클연결 {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
