@@ -5,7 +5,7 @@ import javax.swing.table.*;
 public class WaitRoom extends JPanel {
 	JTable table1,table2;
 	DefaultTableModel model1,model2;
-	JTextPane tp;
+	JTextArea tp; //01.14 수정 (TextPane에서 TextArea로 변경)
 	JTextField tf;
 	JButton b1,b2,b3,b4,b5,b6;
 	WaitRoom(){
@@ -25,8 +25,8 @@ public class WaitRoom extends JPanel {
 		js1.setBounds(10,15,600,400);
 		js2.setBounds(10,420,600,290);
 		
-		tp=new JTextPane();
-		tf=new JTextField();
+		tp=new JTextArea(); //01.14 수정 (TextPane에서 TextArea로 변경)
+		tf=new JTextField(); 
 		b1=new JButton("방만들기");
 		b2=new JButton("방들어가기");
 		b3=new JButton("쪽지보내기");

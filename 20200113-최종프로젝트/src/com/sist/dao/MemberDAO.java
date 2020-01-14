@@ -6,8 +6,8 @@ public class MemberDAO {
 	private Connection conn; // 오라클 연결 => Socket
 	private PreparedStatement ps; //BufferedReader, OutputStream 
 	// 라이브러리는 원본이 감춰져있다.
-	//private final String URL="jdbc:oracle:thin:@localhost:1521:XE"; 
-	private final String URL="jdbc:oracle:thin:@211.238.142.192:1521:XE";  //학민씨 컴퓨터 
+	private final String URL="jdbc:oracle:thin:@localhost:1521:XE"; 
+	//private final String URL="jdbc:oracle:thin:@211.238.142.192:1521:XE";  //학민씨 컴퓨터 
 	// 오라클 연결주소
 	// 1. 드라이버 등록 => 한 번 수행 => 생성자 
 	
@@ -50,7 +50,7 @@ public class MemberDAO {
 		{
 			getConnection();
 			// 오라클에 요청
-			String sql="SELECT COUNT(*) FROM memberInfo WHERE id=?";
+			String sql="SELECT COUNT(*) FROM member WHERE id=?";
 			ps=conn.prepareStatement(sql); // 오라클로 전송
 			// ?에 값을 채운다
 			ps.setString(1, id);
@@ -68,7 +68,7 @@ public class MemberDAO {
 			else 
 			{
 				// 요청 시작 
-				sql="SELECT * FROM memberInfo WHERE id=?";
+				sql="SELECT * FROM member WHERE id=?";
 				ps=conn.prepareStatement(sql); //전송 
 				ps.setString(1,id); //실행 전에 '?'의 값을 채운다.
 				rs=ps.executeQuery(); // 실행 
