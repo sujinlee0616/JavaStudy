@@ -11,11 +11,11 @@ public class GameRoom extends JPanel{
    GameView games=new GameView();
    
    boolean[] sw=new boolean[6]; 
-   // 6¸íÀÇ ÇÃ·¹ÀÌ¾î Áß ºó °ø°£ÀÌ ÀÖ´ÂÁö (¾ÆÁ÷ ÀÔÀå ¾È ÇÑ »ç¶÷ÀÌ ÀÖ´ÂÁö) Ã¼Å©ÇÏ±âÀ§ÇØ¼­... 
-   // booleanÀº ÃÊ±â°ªÀÌ false´Ï°¡ Ã³À½¿£ ´Ù falseÀÓ. Ã¤¿öÁö´Â ¼ø°£ true·Î º¯°æ 
+   // 6ëª…ì˜ í”Œë ˆì´ì–´ ì¤‘ ë¹ˆ ê³µê°„ì´ ìˆëŠ”ì§€ (ì•„ì§ ì…ì¥ ì•ˆ í•œ ì‚¬ëŒì´ ìˆëŠ”ì§€) ì²´í¬í•˜ê¸°ìœ„í•´ì„œ... 
+   // booleanì€ ì´ˆê¸°ê°’ì´ falseë‹ˆê°€ ì²˜ìŒì—” ë‹¤ falseì„. ì±„ì›Œì§€ëŠ” ìˆœê°„ trueë¡œ ë³€ê²½ 
    
-   // Ç×»ó ¸ÇÂÊ ¿Ş À§°¡ ³ªÀÓ 
-   // 6¸í ´Ù ¸ğ¿©¾ß¸¸ ½ÃÀÛ °¡´É 
+   // í•­ìƒ ë§¨ìª½ ì™¼ ìœ„ê°€ ë‚˜ì„ 
+   // 6ëª… ë‹¤ ëª¨ì—¬ì•¼ë§Œ ì‹œì‘ ê°€ëŠ¥ 
    
    public GameRoom()
    {
@@ -75,11 +75,11 @@ public class GameRoom extends JPanel{
 	   tf.setBounds(10, 695, 830, 30);
 	   add(tf);
 	   
-	   b1=new JButton("ÃÊ´ëÇÏ±â");
-	   b2=new JButton("°­ÅğÇÏ±â");
-	   b3=new JButton("°ÔÀÓÁØºñ");
-	   b4=new JButton("°ÔÀÓ½ÃÀÛ");
-	   b5=new JButton("³ª°¡±â");
+	   b1=new JButton("ì´ˆëŒ€í•˜ê¸°");
+	   b2=new JButton("ê°•í‡´í•˜ê¸°");
+	   b3=new JButton("ê²Œì„ì¤€ë¹„");
+	   b4=new JButton("ê²Œì„ì‹œì‘");
+	   b5=new JButton("ë‚˜ê°€ê¸°");
 	   
 	   JPanel p=new JPanel();
 	   p.setLayout(new GridLayout(5,1,5,5));
@@ -90,7 +90,7 @@ public class GameRoom extends JPanel{
    public Image getImageSizeChange(ImageIcon icon,int width,int height)
    {
    	Image img=icon.getImage();
-   	Image change=img.getScaledInstance(width, height, Image.SCALE_SMOOTH); // ÀÌ¹ÌÁö¸¦ ÆĞ³Î Å©±â¿¡ µü ¸Â°Ô µé¾î°¥ ¼ö ÀÖ°Ô ÇØÁÖ´Â ¾Ö 
+   	Image change=img.getScaledInstance(width, height, Image.SCALE_SMOOTH); // ì´ë¯¸ì§€ë¥¼ íŒ¨ë„ í¬ê¸°ì— ë”± ë§ê²Œ ë“¤ì–´ê°ˆ ìˆ˜ ìˆê²Œ í•´ì£¼ëŠ” ì•  
    	return change;
    }
 }

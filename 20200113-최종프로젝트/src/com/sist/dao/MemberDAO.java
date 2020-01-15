@@ -1,15 +1,15 @@
 package com.sist.dao;
 import java.sql.*;
 
-// µ¥ÀÌÅÍ¸¦ ¿¬°áÇØÁÖ´Â ¸Ş¼Òµå 
+// ë°ì´í„°ë¥¼ ì—°ê²°í•´ì£¼ëŠ” ë©”ì†Œë“œ 
 public class MemberDAO {
-	private Connection conn; // ¿À¶óÅ¬ ¿¬°á => Socket
+	private Connection conn; // ì˜¤ë¼í´ ì—°ê²° => Socket
 	private PreparedStatement ps; //BufferedReader, OutputStream 
-	// ¶óÀÌºê·¯¸®´Â ¿øº»ÀÌ °¨ÃçÁ®ÀÖ´Ù.
+	// ë¼ì´ë¸ŒëŸ¬ë¦¬ëŠ” ì›ë³¸ì´ ê°ì¶°ì ¸ìˆë‹¤.
 	private final String URL="jdbc:oracle:thin:@localhost:1521:XE"; 
-	//private final String URL="jdbc:oracle:thin:@211.238.142.192:1521:XE";  //ÇĞ¹Î¾¾ ÄÄÇ»ÅÍ 
-	// ¿À¶óÅ¬ ¿¬°áÁÖ¼Ò
-	// 1. µå¶óÀÌ¹ö µî·Ï => ÇÑ ¹ø ¼öÇà => »ı¼ºÀÚ 
+	//private final String URL="jdbc:oracle:thin:@211.238.142.192:1521:XE";  //í•™ë¯¼ì”¨ ì»´í“¨í„° 
+	// ì˜¤ë¼í´ ì—°ê²°ì£¼ì†Œ
+	// 1. ë“œë¼ì´ë²„ ë“±ë¡ => í•œ ë²ˆ ìˆ˜í–‰ => ìƒì„±ì 
 	
 	public MemberDAO() 
 	{
@@ -22,7 +22,7 @@ public class MemberDAO {
 		}
 	}
 	
-	// 2. ¿¬°á
+	// 2. ì—°ê²°
 	public void getConnection() 
 	{
 		try 
@@ -31,7 +31,7 @@ public class MemberDAO {
 		}catch(Exception ex) {}
 	}
 	
-	// 3. ¿¬°áÇØÁ¦
+	// 3. ì—°ê²°í•´ì œ
 	public void disConnection() 
 	{
 		try 
@@ -42,39 +42,39 @@ public class MemberDAO {
 		}catch(Exception ex) {}
 	}
 	
-	// 4. ±â´É Ã³¸® 
+	// 4. ê¸°ëŠ¥ ì²˜ë¦¬ 
 	public String isLogin(String id,String pwd) 
 	{
 		String result="";
 		try 
 		{
 			getConnection();
-			// ¿À¶óÅ¬¿¡ ¿äÃ»
+			// ì˜¤ë¼í´ì— ìš”ì²­
 			String sql="SELECT COUNT(*) FROM member WHERE id=?";
-			ps=conn.prepareStatement(sql); // ¿À¶óÅ¬·Î Àü¼Û
-			// ?¿¡ °ªÀ» Ã¤¿î´Ù
+			ps=conn.prepareStatement(sql); // ì˜¤ë¼í´ë¡œ ì „ì†¡
+			// ?ì— ê°’ì„ ì±„ìš´ë‹¤
 			ps.setString(1, id);
-			// ½ÇÇà ¿äÃ»
+			// ì‹¤í–‰ ìš”ì²­
 			ResultSet rs=ps.executeQuery();
-			rs.next(); // ½ÇÁ¦ Ãâ·ÂÀ§Ä¡¿¡ Ä¿¼­¸¦ ÀÌµ¿ÇÑ´Ù. next ºüÁö¸é ¿À·ù³­´Ù.  
+			rs.next(); // ì‹¤ì œ ì¶œë ¥ìœ„ì¹˜ì— ì»¤ì„œë¥¼ ì´ë™í•œë‹¤. next ë¹ ì§€ë©´ ì˜¤ë¥˜ë‚œë‹¤.  
 			int count = rs.getInt(1);
 			rs.close();
 			
-			// ID°¡ ÀÖ´ÂÁö ¾ø´ÂÁö¸¦ Ã¼Å©ÇÏ°í, °¡ÀÔÇÑ ÀÌÈÄÀÇ ³â¼ö Ã¼Å©.
+			// IDê°€ ìˆëŠ”ì§€ ì—†ëŠ”ì§€ë¥¼ ì²´í¬í•˜ê³ , ê°€ì…í•œ ì´í›„ì˜ ë…„ìˆ˜ ì²´í¬.
 			if(count==0)
 			{
 				result="NOID";
 			}
 			else 
 			{
-				// ¿äÃ» ½ÃÀÛ 
+				// ìš”ì²­ ì‹œì‘ 
 				sql="SELECT * FROM member WHERE id=?";
-				ps=conn.prepareStatement(sql); //Àü¼Û 
-				ps.setString(1,id); //½ÇÇà Àü¿¡ '?'ÀÇ °ªÀ» Ã¤¿î´Ù.
-				rs=ps.executeQuery(); // ½ÇÇà 
+				ps=conn.prepareStatement(sql); //ì „ì†¡ 
+				ps.setString(1,id); //ì‹¤í–‰ ì „ì— '?'ì˜ ê°’ì„ ì±„ìš´ë‹¤.
+				rs=ps.executeQuery(); // ì‹¤í–‰ 
 				rs.next();
 				
-				//°ªÀ» ¹Ş´Â´Ù
+				//ê°’ì„ ë°›ëŠ”ë‹¤
 				String mid=rs.getString(1);
 				String mpwd=rs.getString(2);
 				String name=rs.getString(3);
@@ -85,13 +85,13 @@ public class MemberDAO {
 				
 				if(mpwd.equals(pwd)) 
 				{
-					// ·Î±×ÀÎ
+					// ë¡œê·¸ì¸
 					result=mid+"|"+name+"|"+sex+"|"+avatar;
 				}
 				
 				else 
 				{
-					//ºñ¹Ğ¹øÈ£°¡ Æ²¸®´Ù
+					//ë¹„ë°€ë²ˆí˜¸ê°€ í‹€ë¦¬ë‹¤
 					result="NOPWD";
 				}
 				
@@ -103,7 +103,7 @@ public class MemberDAO {
 				 * 
 				 * sql="INSERT INTO member VALUES('"+name+"','"+sex+"', '"+id+"', "+age+")";
 				 * sql="INSERT INTO member VALUES (?,?,?,?)" 
-				 * // ¿äÁò À§ º¸´Ù´Â ¾Æ·¡°Í°ú °°ÀÌ ¸¹ÀÌ ¾¸¡Ú¡Ú prepared statement 
+				 * // ìš”ì¦˜ ìœ„ ë³´ë‹¤ëŠ” ì•„ë˜ê²ƒê³¼ ê°™ì´ ë§ì´ ì”€â˜…â˜… prepared statement 
 				*/
 			}
 					
@@ -113,7 +113,7 @@ public class MemberDAO {
 		}
 		finally 
 		{
-			// ¿¬°á ÇØÁ¦ 
+			// ì—°ê²° í•´ì œ 
 			disConnection(); // 
 		}
 		return result;

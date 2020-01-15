@@ -1,28 +1,29 @@
-// ¹æ Á¤º¸¸¦ ¹­¾î¼­ ÀúÀåÇÏ´Â Å¬·¡½º 
+// ë°© ì •ë³´ë¥¼ ë¬¶ì–´ì„œ ì €ì¥í•˜ëŠ” í´ë˜ìŠ¤ 
 package com.sist.server;
 import java.util.*;
 
 public class Room {
 	String roomName,roomState,roomPwd;
-	int current,maxcount; // ÇöÀçÀÎ¿ø¼ö, ÃÖ´ëÀÎ¿ø¼ö 
+	int current,maxcount; // í˜„ì¬ì¸ì›ìˆ˜, ìµœëŒ€ì¸ì›ìˆ˜ 
 	
-	Vector<Server.Client> userVc=new Vector<Server.Client>(); // ¹æ ¾È¿¡ µé¾î°£ »ç¶÷µé¸¸ Á¦¾îÇÏ±â À§ÇØ Vector¸¦ ¸¸µé¾úÀ½ 
-	// Vector<Client> userVc=new Vector<Client>(); ¶ó°í ¾µ¼ö ¾øÀ½. 
-	// Client Å¬·¡½º´Â Room Å¬·¡½º¿Í ´Ù¸¥ Å¬·¡½º ¾È¿¡ ÀÖÀ¸¹Ç·Î, Server.Client¶ó°í À§Ä¡ ¾Ë·ÁÁà¾ßÇÔ. 
-	// Server Å¬·¡½º¿¡¼­ ÄÚµùÇÒ ¶§´Â Client Å¬·¡½º°¡ Server Å¬·¡½º ¾È¿¡ ÀÖÀ¸¹Ç·Î Vector<Client> ÀÌ·¸°Ô ÄÚµù °¡´ÉÇß´ø °Í.
-	// VectorÀÇ index ¹øÈ£°¡ 0ÀÎ ¾Ö°¡ ¹æÀåÀÌ µÊ. 
-	// 0ÀÌ´ø ¾Ö°¡ ³ª°¡¸é, index ¹øÈ£°¡ ÀÚµ¿ Á¶Á¤µÇ¾î 1¹øÀÌ´ø ¾Ö°¡ 0¹øÀÌ µÈ´Ù ==> ¾ê°¡ »õ·Î¿î ¹æÀåÀÌ µÊ 
+	Vector<Server.Client> userVc=new Vector<Server.Client>(); // ë°© ì•ˆì— ë“¤ì–´ê°„ ì‚¬ëŒë“¤ë§Œ ì œì–´í•˜ê¸° ìœ„í•´ Vectorë¥¼ ë§Œë“¤ì—ˆìŒ 
+	// Vector<Client> userVc=new Vector<Client>(); ë¼ê³  ì“¸ìˆ˜ ì—†ìŒ. 
+	// Client í´ë˜ìŠ¤ëŠ” Room í´ë˜ìŠ¤ì™€ ë‹¤ë¥¸ í´ë˜ìŠ¤ ì•ˆì— ìˆìœ¼ë¯€ë¡œ, Server.Clientë¼ê³  ìœ„ì¹˜ ì•Œë ¤ì¤˜ì•¼í•¨. 
+	// Server í´ë˜ìŠ¤ì—ì„œ ì½”ë”©í•  ë•ŒëŠ” Client í´ë˜ìŠ¤ê°€ Server í´ë˜ìŠ¤ ì•ˆì— ìˆìœ¼ë¯€ë¡œ Vector<Client> ì´ë ‡ê²Œ ì½”ë”© ê°€ëŠ¥í–ˆë˜ ê²ƒ.
+	// Vectorì˜ index ë²ˆí˜¸ê°€ 0ì¸ ì• ê°€ ë°©ì¥ì´ ë¨. 
+	// 0ì´ë˜ ì• ê°€ ë‚˜ê°€ë©´, index ë²ˆí˜¸ê°€ ìë™ ì¡°ì •ë˜ì–´ 1ë²ˆì´ë˜ ì• ê°€ 0ë²ˆì´ ëœë‹¤ ==> ì–˜ê°€ ìƒˆë¡œìš´ ë°©ì¥ì´ ë¨ 
 	
-	// [»ı¼ºÀÚ] 
-	//  - ¿ìÅ¬¸¯ > Generate Constructor using Fields >> current,userVc »©°í ¸¸µç´Ù. 
-	//  - current, userVc´Â ¼­¹ö¿¡¼­ Ã³¸®ÇØ¾ß ÇÏ´Ï±î ¿©±â¼­ »ı¼ºÀÚ ¾È ¸¸µé¾úÀ½ 
-	public Room(String roomName, String roomState, String roomPwd, int maxcount) { //¾ê°¡ È£ÃâµÇ¸é ¹æÀÌ ¸¸µé¾îÁø´Ù. //¾ê¸¦ È£ÃâÇÏ´Â ¾Ö°¡ ¹æÀåÀÌ µÊ
+	
+	// [ìƒì„±ì] 
+	//  - ìš°í´ë¦­ > Generate Constructor using Fields >> current,userVc ë¹¼ê³  ë§Œë“ ë‹¤. 
+	//  - current, userVcëŠ” ì„œë²„ì—ì„œ ì²˜ë¦¬í•´ì•¼ í•˜ë‹ˆê¹Œ ì—¬ê¸°ì„œ ìƒì„±ì ì•ˆ ë§Œë“¤ì—ˆìŒ 
+	public Room(String roomName, String roomState, String roomPwd, int maxcount) { //ì–˜ê°€ í˜¸ì¶œë˜ë©´ ë°©ì´ ë§Œë“¤ì–´ì§„ë‹¤. //ì–˜ë¥¼ í˜¸ì¶œí•˜ëŠ” ì• ê°€ ë°©ì¥ì´ ë¨
 		
 		this.roomName = roomName;
 		this.roomState = roomState;
 		this.roomPwd = roomPwd;
 		this.maxcount = maxcount;
-		current=1; // ¹æÀÌ ¸¸µé¾îÁ³À¸´Ï±î ÇöÀç ÀÎ¿ø¼ö 1  
+		current=1; // ë°©ì´ ë§Œë“¤ì–´ì¡Œìœ¼ë‹ˆê¹Œ í˜„ì¬ ì¸ì›ìˆ˜ 1  
 	}
 	
 	

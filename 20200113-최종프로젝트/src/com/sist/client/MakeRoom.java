@@ -1,4 +1,4 @@
-// ¹æ Á¤º¸¸¦ ¸¸µå´Â ÇÁ·Î±×·¥
+// ë°© ì •ë³´ë¥¼ ë§Œë“œëŠ” í”„ë¡œê·¸ë¨
 package com.sist.client;
 import java.awt.*;
 import javax.swing.*;
@@ -13,16 +13,16 @@ public class MakeRoom extends JDialog implements ActionListener{
 	
 	public MakeRoom()
 	{
-		la1=new JLabel("¹æÀÌ¸§",JLabel.RIGHT);
-		la2=new JLabel("»óÅÂ",JLabel.RIGHT);
-		la3=new JLabel("ÀÎ¿ø",JLabel.RIGHT);
-		la4=new JLabel("ºñ¹Ğ¹øÈ£");
+		la1=new JLabel("ë°©ì´ë¦„",JLabel.RIGHT);
+		la2=new JLabel("ìƒíƒœ",JLabel.RIGHT);
+		la3=new JLabel("ì¸ì›",JLabel.RIGHT);
+		la4=new JLabel("ë¹„ë°€ë²ˆí˜¸");
 		
 		tf=new JTextField();
 		pf=new JPasswordField();
-		rb1=new JRadioButton("°ø°³");
-		rb2=new JRadioButton("ºñ°ø°³");
-		ButtonGroup bg=new ButtonGroup(); // ¹öÆ°±×·ìÀ¸·Î ¹­¾î³ö¾ß ÀÌ Áß ÅÃ1¸¸ °¡´ÉÇÏµµ·Ï ÇÒ ¼ö ÀÖÀ½.  
+		rb1=new JRadioButton("ê³µê°œ");
+		rb2=new JRadioButton("ë¹„ê³µê°œ");
+		ButtonGroup bg=new ButtonGroup(); // ë²„íŠ¼ê·¸ë£¹ìœ¼ë¡œ ë¬¶ì–´ë†”ì•¼ ì´ ì¤‘ íƒ1ë§Œ ê°€ëŠ¥í•˜ë„ë¡ í•  ìˆ˜ ìˆìŒ.  
 		bg.add(rb1);
 		bg.add(rb2);
 		rb1.setSelected(true);
@@ -31,17 +31,17 @@ public class MakeRoom extends JDialog implements ActionListener{
 		pf.setVisible(false);
 
 		
-		b1=new JButton("¹æ¸¸µé±â");
-		b2=new JButton("Ãë¼Ò");
+		b1=new JButton("ë°©ë§Œë“¤ê¸°");
+		b2=new JButton("ì·¨ì†Œ");
 		
 		box=new JComboBox();
 		for(int i=2;i<=6;i++)
 		{
-			box.addItem(i+"¸í"); // 2¸íºÎÅÍ ½ÃÀÛ 
+			box.addItem(i+"ëª…"); // 2ëª…ë¶€í„° ì‹œì‘ 
 			
 		}
 		
-		//¹èÄ¡
+		//ë°°ì¹˜
 		setLayout(null);
 		la1.setBounds(10,15,50,30);
 		tf.setBounds(65,15,150,30);
@@ -68,7 +68,7 @@ public class MakeRoom extends JDialog implements ActionListener{
 		add(la4); add(pf);
 		add(la3);add(box);		
 		setSize(255,255);
-		//setVisible(true); // setVisibleÀÇ µğÆúÆ®°ªÀº false. // '¹æ¸¸µé±â' ¹öÆ° Å¬¸¯ÇßÀ» ¶§¸¸ ³ëÃâµÇµµ·Ï Ã³À½¿£ false»óÅÂ·Î ³ÀµĞ´Ù.   
+		//setVisible(true); // setVisibleì˜ ë””í´íŠ¸ê°’ì€ false. // 'ë°©ë§Œë“¤ê¸°' ë²„íŠ¼ í´ë¦­í–ˆì„ ë•Œë§Œ ë…¸ì¶œë˜ë„ë¡ ì²˜ìŒì—” falseìƒíƒœë¡œ ëƒ…ë‘”ë‹¤.   
 		
 		rb1.addActionListener(this);
 		rb2.addActionListener(this);
@@ -80,7 +80,7 @@ public class MakeRoom extends JDialog implements ActionListener{
 		
 	}
 
-	// MakeRoom ÀÚÃ¼ ³»¿¡¼­¸¸ ¹ß»ıÇÏ´Â ÀÌº¥Æ®¸¸ ¿©±â´Ù°¡ ÀûÀÚ 
+	// MakeRoom ìì²´ ë‚´ì—ì„œë§Œ ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸ë§Œ ì—¬ê¸°ë‹¤ê°€ ì ì 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub

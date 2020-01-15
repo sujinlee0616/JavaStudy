@@ -8,7 +8,7 @@ public class MainClass {
 		try 
 		{
 			FileReader fis=
-					new FileReader("C:\\Users\\sist\\git\\JavaStudy\\20200113-ÃÖÁ¾ÇÁ·ÎÁ§Æ®\\src\\com\\sist\\server\\Server.java");
+					new FileReader("C:\\Users\\sist\\git\\JavaStudy\\20200113-ìµœì¢…í”„ë¡œì íŠ¸\\src\\com\\sist\\server\\Server.java");
 			String s="";
 			int i=0;
 			while((i=fis.read())!=-1) 

@@ -11,36 +11,36 @@ import javax.swing.JTextField;
  * <Java GUI>
  * 	1. JFrame
  * 	2. JPanel 
- * 		ex) ÀÌÅ¬¸³½ºÀÇ tab.  
+ * 		ex) ì´í´ë¦½ìŠ¤ì˜ tab.  
  * 	3. JWindow 
- * 		: Å¸ÀÌÆ² ¹Ù (X) ¿­°í´Ý´Â ¹Ù (X) ex) ÀÌÅ¬¸³½º ¶ç¿ï ¶§ ³ª¿À´Â Ã¢. 
+ * 		: íƒ€ì´í‹€ ë°” (X) ì—´ê³ ë‹«ëŠ” ë°” (X) ex) ì´í´ë¦½ìŠ¤ ë„ìš¸ ë•Œ ë‚˜ì˜¤ëŠ” ì°½. 
  * 	4. JDialog 
- * 		: ´Ý±â¹öÆ°(O) ÃÖ´ëÈ­/ÃÖ¼ÒÈ­ ¹öÆ°(X)
- * 		1) Modal : ÀÌ Ã¢ÀÌ Á¾·áµÇ±â Àü±îÁö ´Ù¸¥ ÀÛ¾÷ ºÒ°¡. 
- * 			ex) ÀÌÅ¬¸³½º¿¡¼­ Java Project »õ·Î ¸¸µé ¶§ ¶ß´Â Ã¢ 
- * 			ex) °ÔÀÓ¿¡¼­ '¹æ¸¸µé±â' Ã¢. 
- * 		2) Modeless : Ã¢ÀÌ ¶°ÀÖÁö¸¸ ´Ù¸¥ ÀÛ¾÷ °¡´É.  
- * 			ex) ÀÌÅ¬¸³½º Ctrl+F ÇÏ¸é ³ª¿À´Â Find/Replace Ã¢
+ * 		: ë‹«ê¸°ë²„íŠ¼(O) ìµœëŒ€í™”/ìµœì†Œí™” ë²„íŠ¼(X)
+ * 		1) Modal : ì´ ì°½ì´ ì¢…ë£Œë˜ê¸° ì „ê¹Œì§€ ë‹¤ë¥¸ ìž‘ì—… ë¶ˆê°€. 
+ * 			ex) ì´í´ë¦½ìŠ¤ì—ì„œ Java Project ìƒˆë¡œ ë§Œë“¤ ë•Œ ëœ¨ëŠ” ì°½ 
+ * 			ex) ê²Œìž„ì—ì„œ 'ë°©ë§Œë“¤ê¸°' ì°½. 
+ * 		2) Modeless : ì°½ì´ ë– ìžˆì§€ë§Œ ë‹¤ë¥¸ ìž‘ì—… ê°€ëŠ¥.  
+ * 			ex) ì´í´ë¦½ìŠ¤ Ctrl+F í•˜ë©´ ë‚˜ì˜¤ëŠ” Find/Replace ì°½
  * 
- *  extends : »ó¼Ó 
+ *  extends : ìƒì† 
 */
-import java.awt.*; // window¿Í °ü·ÃµÈ Å¬·¡½º
+import java.awt.*; // windowì™€ ê´€ë ¨ëœ í´ëž˜ìŠ¤
 public class Login extends JPanel {
 	
-	// Å¬·¡½º ¿µ¿ª ¾È¿¡¼­´Â Á¦¾î¹® ¾µ ¼ö X!! Å¬·¡½º ¿µ¿ª ¾È¿¡¼­´Â ¼±¾ð¸¸ ÇÒ »Ó! ¡Ú
-	// (Á¦¾î¹® ¾²°í ½ÍÀ¸¸é ¸Þ¼Òµå¸¦ ¸¸µé°í ±× ¾ÈÀÇ ¸Þ¼Òµå ¿µ¿ª¿¡´Ù°¡ ÇØ¾ß....) 
-	// ±×·¡¼­ Å¬·¡½º ¿µ¿ª¿¡¼­ ÀÌ¹ÌÁö °¡Á®¿À·Á°í ¾Æ·¡¿Í °°ÀÌ ÀÌ¹ÌÁö ¼±¾ð ÈÄ ÃÊ±âÈ­ ºí·ÏÀ» ¸¸µé¾ú´Ù. 
+	// í´ëž˜ìŠ¤ ì˜ì—­ ì•ˆì—ì„œëŠ” ì œì–´ë¬¸ ì“¸ ìˆ˜ X!! í´ëž˜ìŠ¤ ì˜ì—­ ì•ˆì—ì„œëŠ” ì„ ì–¸ë§Œ í•  ë¿! â˜…
+	// (ì œì–´ë¬¸ ì“°ê³  ì‹¶ìœ¼ë©´ ë©”ì†Œë“œë¥¼ ë§Œë“¤ê³  ê·¸ ì•ˆì˜ ë©”ì†Œë“œ ì˜ì—­ì—ë‹¤ê°€ í•´ì•¼....) 
+	// ê·¸ëž˜ì„œ í´ëž˜ìŠ¤ ì˜ì—­ì—ì„œ ì´ë¯¸ì§€ ê°€ì ¸ì˜¤ë ¤ê³  ì•„ëž˜ì™€ ê°™ì´ ì´ë¯¸ì§€ ì„ ì–¸ í›„ ì´ˆê¸°í™” ë¸”ë¡ì„ ë§Œë“¤ì—ˆë‹¤. 
 	Image back;
-	JLabel la1,la2; // Ctrl+spaceÇÏ¸é import µÈ´Ù. 
+	JLabel la1,la2; // Ctrl+spaceí•˜ë©´ import ëœë‹¤. 
 	JTextField tf;
 	JPasswordField pf;
 	JButton b1,b2;
 	
-	//»ý¼ºÀÚ ÇÔ¼ö. »ý¼ºÀÚ ÇÔ¼ö¿¡¼­ È­¸éÀ» ¸¸µé¾îÁà¾ß ÇÑ´Ù. 
-	Login()	{ // ¾Õ¿¡´Ù°¡ ¸®ÅÏÅ¸ÀÔ ºÙÀÌ¸é ¸Þ¼Òµå°¡ µÇ¾î¹ö¸². ¾È µÈ´Ù. 	
+	//ìƒì„±ìž í•¨ìˆ˜. ìƒì„±ìž í•¨ìˆ˜ì—ì„œ í™”ë©´ì„ ë§Œë“¤ì–´ì¤˜ì•¼ í•œë‹¤. 
+	Login()	{ // ì•žì—ë‹¤ê°€ ë¦¬í„´íƒ€ìž… ë¶™ì´ë©´ ë©”ì†Œë“œê°€ ë˜ì–´ë²„ë¦¼. ì•ˆ ëœë‹¤. 	
 		setLayout(null);
 		back=Toolkit.getDefaultToolkit().getImage("c:\\image\\background.jpg");
-		//ÃÊ±âÈ­ ºí·Ï : ÀÌ¹ÌÁö¸¦ °®°í ¿À°í ½Í¾î¿ä. ÃÊ±âÈ­ ÇÏ°í ½Í¾î¿ä.
+		//ì´ˆê¸°í™” ë¸”ë¡ : ì´ë¯¸ì§€ë¥¼ ê°–ê³  ì˜¤ê³  ì‹¶ì–´ìš”. ì´ˆê¸°í™” í•˜ê³  ì‹¶ì–´ìš”.
 		la1=new JLabel("ID",JLabel.RIGHT);
 		la1.setForeground(Color.blue);
 		la2=new JLabel("Password",JLabel.RIGHT);
@@ -49,10 +49,10 @@ public class Login extends JPanel {
 		tf=new JTextField();
 		pf=new JPasswordField();
 		
-		b1=new JButton("·Î±×ÀÎ");
-		b2=new JButton("Ãë¼Ò");
+		b1=new JButton("ë¡œê·¸ì¸");
+		b2=new JButton("ì·¨ì†Œ");
 		
-		// ¹èÄ¡
+		// ë°°ì¹˜
 		la1.setBounds(390,330,80,30);
 		tf.setBounds(475,330,150,30);
 		
@@ -77,8 +77,8 @@ public class Login extends JPanel {
 	
 
 	@Override
-	protected void paintComponent(Graphics g) { // <== ±×¸² ±×¸®´Â ¸Þ¼Òµå   // ½ºÅ²Àº PainComponent·Î ¸¸µç´Ù. 
-		g.drawImage(back, 0, 0, getWidth(), getHeight(), this); //this : ¾ê ÀÚ½Å. 
+	protected void paintComponent(Graphics g) { // <== ê·¸ë¦¼ ê·¸ë¦¬ëŠ” ë©”ì†Œë“œ   // ìŠ¤í‚¨ì€ PainComponentë¡œ ë§Œë“ ë‹¤. 
+		g.drawImage(back, 0, 0, getWidth(), getHeight(), this); //this : ì–˜ ìžì‹ . 
 	}
 
 }

@@ -5,17 +5,17 @@ import javax.swing.table.*;
 public class WaitRoom extends JPanel {
 	JTable table1,table2;
 	DefaultTableModel model1,model2;
-	JTextArea tp; //01.14 ¼öÁ¤ (TextPane¿¡¼­ TextArea·Î º¯°æ)
+	JTextArea tp; //01.14 ìˆ˜ì • (TextPaneì—ì„œ TextAreaë¡œ ë³€ê²½)
 	JTextField tf;
 	JButton b1,b2,b3,b4,b5,b6;
 	WaitRoom(){
-		String[] col1= {"¹æÀÌ¸§","°ø°³/ºñ°ø°³","ÀÎ¿ø"};
+		String[] col1= {"ë°©ì´ë¦„","ê³µê°œ/ë¹„ê³µê°œ","ì¸ì›"};
 		String[][] row1=new String[0][3];
 		model1=new DefaultTableModel(row1,col1);
 		table1=new JTable(model1);
 		JScrollPane js1=new JScrollPane(table1);
 		
-		String[] col2= {"ID","ÀÌ¸§","¼ºº°","À§Ä¡"};
+		String[] col2= {"ID","ì´ë¦„","ì„±ë³„","ìœ„ì¹˜"};
 		String[][] row2=new String[0][4];
 		model2=new DefaultTableModel(row2,col2);
 		table2=new JTable(model2);
@@ -25,14 +25,14 @@ public class WaitRoom extends JPanel {
 		js1.setBounds(10,15,600,400);
 		js2.setBounds(10,420,600,290);
 		
-		tp=new JTextArea(); //01.14 ¼öÁ¤ (TextPane¿¡¼­ TextArea·Î º¯°æ)
+		tp=new JTextArea(); //01.14 ìˆ˜ì • (TextPaneì—ì„œ TextAreaë¡œ ë³€ê²½)
 		tf=new JTextField(); 
-		b1=new JButton("¹æ¸¸µé±â");
-		b2=new JButton("¹æµé¾î°¡±â");
-		b3=new JButton("ÂÊÁöº¸³»±â");
-		b4=new JButton("Á¤º¸º¸±â");
-		b5=new JButton("1:1 °ÔÀÓ");
-		b6=new JButton("³ª°¡±â");
+		b1=new JButton("ë°©ë§Œë“¤ê¸°");
+		b2=new JButton("ë°©ë“¤ì–´ê°€ê¸°");
+		b3=new JButton("ìª½ì§€ë³´ë‚´ê¸°");
+		b4=new JButton("ì •ë³´ë³´ê¸°");
+		b5=new JButton("1:1 ê²Œì„");
+		b6=new JButton("ë‚˜ê°€ê¸°");
 		
 		JScrollPane js3=new JScrollPane(tp);
 		js3.setBounds(615,15,380,400); 
@@ -41,7 +41,7 @@ public class WaitRoom extends JPanel {
 		add(tf);
 		
 		JPanel p=new JPanel();
-		p.setLayout(new GridLayout(3,2,5,5)); // 3,2 : 3ÁÙ 2Ä­ // 5,5 : ÁÂ¿ì°£°İ
+		p.setLayout(new GridLayout(3,2,5,5)); // 3,2 : 3ì¤„ 2ì¹¸ // 5,5 : ì¢Œìš°ê°„ê²©
 		p.add(b1);p.add(b2);
 		p.add(b3);p.add(b4);
 		p.add(b5);p.add(b6);
@@ -52,7 +52,7 @@ public class WaitRoom extends JPanel {
 		add(js1);
 		add(js2);
 		
-//		String[] data= {"»¡¸®¿Í","°ø°³","1/6"};
+//		String[] data= {"ë¹¨ë¦¬ì™€","ê³µê°œ","1/6"};
 //		model1.addRow(data);
 		
 	}

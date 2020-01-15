@@ -1,58 +1,64 @@
 package com.sist.client;
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.smartcardio.Card;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-// ¼­¹ö ¿¬°á
+// ì„œë²„ ì—°ê²°
 import java.util.*;
 import java.net.*;
 import java.io.*;
 
 import com.sist.common.Function;
-//ÆĞÅ°Áö°¡ Æ²¸®±â ¶§¹®¿¡ ÀÓÆ÷Æ®ÇßÀ½ 
+//íŒ¨í‚¤ì§€ê°€ í‹€ë¦¬ê¸° ë•Œë¬¸ì— ì„í¬íŠ¸í–ˆìŒ 
 import com.sist.dao.MemberDAO;
-public class MainForm extends JFrame implements ActionListener, Runnable{ // <== extends Activity·Î ¹Ù²Ù¸é ¾Èµå·ÎÀÌµåÀÓ! ¼¼»ó¿¡ 
-	// ÀÌ¹Ì JFrame »ó¼Ó ¹Ş¾ÒÀ¸¹Ç·Î »ó¼Ó ºÒ°¡ ==> ¾²·¹µå »ó¼Ó ºÒ°¡´ÉÇÏ¹Ç·Î implements Runnable ÇÑ´Ù! 
+
+import javafx.scene.image.Image;
+public class MainForm extends JFrame implements ActionListener, Runnable, MouseListener{ // <== extends Activityë¡œ ë°”ê¾¸ë©´ ì•ˆë“œë¡œì´ë“œì„! ì„¸ìƒì— 
+	// ì´ë¯¸ JFrame ìƒì† ë°›ì•˜ìœ¼ë¯€ë¡œ ìƒì† ë¶ˆê°€ ==> ì“°ë ˆë“œ ìƒì† ë¶ˆê°€ëŠ¥í•˜ë¯€ë¡œ implements Runnable í•œë‹¤! 
 	Login login=new Login();
 	WaitRoom wr=new WaitRoom();
 	GameRoom gr=new GameRoom();
 	MakeRoom mr=new MakeRoom(); 
-	CardLayout card=new CardLayout(); // À©µµ¿ì Ã¢Àº ±×´ë·Î ³ÀµÎ°í tab º¯°æÇÏ±â À§ÇØ¼­. 
+	CardLayout card=new CardLayout(); // ìœˆë„ìš° ì°½ì€ ê·¸ëŒ€ë¡œ ëƒ…ë‘ê³  tab ë³€ê²½í•˜ê¸° ìœ„í•´ì„œ. 
 	
-	// ¼­¹ö ¿¬°á°ú °ü·ÃµÈ ¶óÀÌºê·¯¸®
-	Socket s; // ¼­¹ö ¿¬°á
-	OutputStream out; //¼­¹ö·Î µ¥ÀÌÅÍ¸¦ Àü¼Û (¿äÃ»)
-	BufferedReader in; //¼­¹ö¿¡¼­ ÀÀ´äÇÑ µ¥ÀÌÅÍ¸¦ ¹Ş´Â´Ù
+	// ì„œë²„ ì—°ê²°ê³¼ ê´€ë ¨ëœ ë¼ì´ë¸ŒëŸ¬ë¦¬
+	Socket s; // ì„œë²„ ì—°ê²°
+	OutputStream out; //ì„œë²„ë¡œ ë°ì´í„°ë¥¼ ì „ì†¡ (ìš”ì²­)
+	BufferedReader in; //ì„œë²„ì—ì„œ ì‘ë‹µí•œ ë°ì´í„°ë¥¼ ë°›ëŠ”ë‹¤
 	/*
-	 * 1) À¯Àú°¡ Á÷Á¢ º¸³»´Â µ¥ÀÌÅÍ => ÀÌº¥Æ® ¹ß»ı 
-	 *  - ex) ¹öÆ° Å¬¸¯ µî ==> ÀÌ·± ÀÌº¥Æ®°¡ ¹ß»ıÇÒ ¶§¸¶´Ù ¼­¹ö¿¡ º¸³»ÁÖ¸é µÊ. 
-	 *        ==> ±×·¯¸é ¼­¹ö¿¡¼­ ¹Ş¾Æ¼­ °ü·ÃµÈ »ç¶÷µéÇÑÅ× ¸Ş¼¼Áö¸¦ ³¯·ÁÁÜ. 
-	 * 2) ¼­¹ö¿¡¼­ µé¾î¿À´Â µ¥ÀÌÅÍ => Thread => Ãâ·Â (Function) 
+	 * 1) ìœ ì €ê°€ ì§ì ‘ ë³´ë‚´ëŠ” ë°ì´í„° => ì´ë²¤íŠ¸ ë°œìƒ 
+	 *  - ex) ë²„íŠ¼ í´ë¦­ ë“± ==> ì´ëŸ° ì´ë²¤íŠ¸ê°€ ë°œìƒí•  ë•Œë§ˆë‹¤ ì„œë²„ì— ë³´ë‚´ì£¼ë©´ ë¨. 
+	 *        ==> ê·¸ëŸ¬ë©´ ì„œë²„ì—ì„œ ë°›ì•„ì„œ ê´€ë ¨ëœ ì‚¬ëŒë“¤í•œí…Œ ë©”ì„¸ì§€ë¥¼ ë‚ ë ¤ì¤Œ. 
+	 * 2) ì„œë²„ì—ì„œ ë“¤ì–´ì˜¤ëŠ” ë°ì´í„° => Thread => ì¶œë ¥ (Function) 
 	*/
 	MainForm(){
-		//À§¿¡ ÀÖÀ»¼ö·Ï Ã¢ÀÌ ¸ÕÀú ¶á´Ù ==> ·Î±×ÀÎÃ¢>WR(WatingRoom)Ã¢ 
+		//ìœ„ì— ìˆì„ìˆ˜ë¡ ì°½ì´ ë¨¼ì € ëœ¬ë‹¤ ==> ë¡œê·¸ì¸ì°½>WR(WatingRoom)ì°½ 
 		setLayout(card);
 		add("LOGIN",login);
 		add("GAME",gr);
 		add("WR",wr);
 		//add("Center",login);
 		
-		setBounds(448,156,1024,768); // °¡¿îµ¥ ÁÂÇ¥ ¼³Á¤
-		setVisible(true); // À©µµ¿ì º¸¿©¶ó
+		setBounds(448,156,1024,768); // ê°€ìš´ë° ì¢Œí‘œ ì„¤ì •
+		setVisible(true); // ìœˆë„ìš° ë³´ì—¬ë¼
 		
-		setResizable(false); // Ã¢ Å©±â ¼öÁ¤ ºÒ°¡´ÉÇÏ°Ô (ÃÖ´ëÈ­ ¹öÆ°µµ ºñÈ°¼ºÈ­µÊ) 
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); // X¹öÆ° ¸ø ´©¸£°Ô 		
+		setResizable(false); // ì°½ í¬ê¸° ìˆ˜ì • ë¶ˆê°€ëŠ¥í•˜ê²Œ (ìµœëŒ€í™” ë²„íŠ¼ë„ ë¹„í™œì„±í™”ë¨) 
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); // Xë²„íŠ¼ ëª» ëˆ„ë¥´ê²Œ 		
 		login.b1.addActionListener(this);
 		wr.tf.addActionListener(this);
-		wr.b6.addActionListener(this); // ´ë±â½Ç ³ª°¡±â ¹öÆ° 
-		wr.b1.addActionListener(this); // ´ë±â½Ç ¹æ¸¸µé±â ¹öÆ° 
+		wr.b6.addActionListener(this); // ëŒ€ê¸°ì‹¤ ë‚˜ê°€ê¸° ë²„íŠ¼ 
+		wr.b1.addActionListener(this); // ëŒ€ê¸°ì‹¤ ë°©ë§Œë“¤ê¸° ë²„íŠ¼ 
 		
-		mr.b1.addActionListener(this); // ¹æ¸¸µé±â ¹öÆ° => JDialogÀÇ '¹æ¸¸µé±â' ¹öÆ°  
-		mr.b2.addActionListener(this); //  ¹æ¸¸µé±â ¹öÆ° => JDialogÀÇ 'Ãë¼Ò ¹öÆ°  
+		mr.b1.addActionListener(this); // ë°©ë§Œë“¤ê¸° ë²„íŠ¼ => JDialogì˜ 'ë°©ë§Œë“¤ê¸°' ë²„íŠ¼  
+		mr.b2.addActionListener(this); //  ë°©ë§Œë“¤ê¸° ë²„íŠ¼ => JDialogì˜ 'ì·¨ì†Œ ë²„íŠ¼  
 	}
 	public static void main(String[] args) {
 		try {
@@ -65,31 +71,31 @@ public class MainForm extends JFrame implements ActionListener, Runnable{ // <==
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		// ·Î±×ÀÎ¹öÆ° ´©¸£¸é Ã¢ ÀüÈ¯ 
-		// ºñ¹Ğ¹øÈ£´Â 
+		// ë¡œê·¸ì¸ë²„íŠ¼ ëˆ„ë¥´ë©´ ì°½ ì „í™˜ 
+		// ë¹„ë°€ë²ˆí˜¸ëŠ” 
 		if(e.getSource()==login.b1) {
 			String id=login.tf.getText();
 			if(id.length()<1)
 			{
-				JOptionPane.showMessageDialog(this,"ID¸¦ ÀÔ·ÂÇÏ¼¼¿ä");
+				JOptionPane.showMessageDialog(this,"IDë¥¼ ì…ë ¥í•˜ì„¸ìš”");
 				login.tf.requestFocus();
 				return;
 			}
 			String pwd=String.copyValueOf(login.pf.getPassword()); 
-			// ºñ¹Ğ¹øÈ£´Â ¹İµå½Ã , getTExt°¡¾Æ´Ï¶ó getPassword·Î °®°í ¿Í¾ß!!
+			// ë¹„ë°€ë²ˆí˜¸ëŠ” ë°˜ë“œì‹œ , getTExtê°€ì•„ë‹ˆë¼ getPasswordë¡œ ê°–ê³  ì™€ì•¼!!
 			if(pwd.length()<1)
 			{
-				JOptionPane.showMessageDialog(this, "ºñ¹Ğ¹øÈ£¸¦ ÀÔ·ÂÇÏ¼¼¿ä");
-				login.pf.requestFocus(); //°­Á¦·Î Æ÷Ä¿½º ÁÜ 
+				JOptionPane.showMessageDialog(this, "ë¹„ë°€ë²ˆí˜¸ë¥¼ ì…ë ¥í•˜ì„¸ìš”");
+				login.pf.requestFocus(); //ê°•ì œë¡œ í¬ì»¤ìŠ¤ ì¤Œ 
 				return;
 			}
 			
-			// Ã³¸® 
+			// ì²˜ë¦¬ 
 			MemberDAO dao=new MemberDAO();
 			String result=dao.isLogin(id,pwd);
 			if(result.equals("NOID")) 
 			{
-				JOptionPane.showMessageDialog(this, "ID°¡ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.");
+				JOptionPane.showMessageDialog(this, "IDê°€ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
 				login.tf.setText("");
 				login.pf.setText("");
 				login.tf.requestFocus();
@@ -98,23 +104,23 @@ public class MainForm extends JFrame implements ActionListener, Runnable{ // <==
 			{
 				login.pf.setText("");
 				login.pf.requestFocus();
-				JOptionPane.showMessageDialog(this, "ºñ¹Ğ¹øÈ£°¡ Æ²¸³´Ï´Ù");
+				JOptionPane.showMessageDialog(this, "ë¹„ë°€ë²ˆí˜¸ê°€ í‹€ë¦½ë‹ˆë‹¤");
 			}
 			else 
 			{
 				connection(result);
 			}
 		}
-		else if(e.getSource()==wr.tf) //´ë±â½Ç Ã¤ÆÃ 
+		else if(e.getSource()==wr.tf) //ëŒ€ê¸°ì‹¤ ì±„íŒ… 
 		{
-			// ÀÔ·ÂµÈ ¹®ÀÚ¿­ ÀĞ±â
+			// ì…ë ¥ëœ ë¬¸ìì—´ ì½ê¸°
 			String msg=wr.tf.getText();
-			if(msg.length()<1) //ÀÔ·Â ¾È µÈ °æ¿ì 
+			if(msg.length()<1) //ì…ë ¥ ì•ˆ ëœ ê²½ìš° 
 			{
 				wr.tf.requestFocus();
 				return;
 			}
-			// if¹®¿¡ ¾È °É·ÈÀ½ ==> Á¤»óÀûÀ¸·Î ¸Ş½ÃÁö ÀÔ·ÂÇÑ °æ¿ì  ==> ¼­¹ö·Î Àü¼Û
+			// ifë¬¸ì— ì•ˆ ê±¸ë ¸ìŒ ==> ì •ìƒì ìœ¼ë¡œ ë©”ì‹œì§€ ì…ë ¥í•œ ê²½ìš°  ==> ì„œë²„ë¡œ ì „ì†¡
 			try
 			{
 				out.write((Function.WAITCHAT+"|"+msg+"\n").getBytes());
@@ -122,26 +128,26 @@ public class MainForm extends JFrame implements ActionListener, Runnable{ // <==
 			
 			wr.tf.setText("");
 		}
-		// ´ë±â½Ç ³ª°¡±â ¹öÆ° Å¬¸¯ ½Ã ==> ¼­¹ö´Â SocketÀ» ²÷°í, Vector¸¦ Áö¿î´Ù.  
+		// ëŒ€ê¸°ì‹¤ ë‚˜ê°€ê¸° ë²„íŠ¼ í´ë¦­ ì‹œ ==> ì„œë²„ëŠ” Socketì„ ëŠê³ , Vectorë¥¼ ì§€ìš´ë‹¤.  
 		else if(e.getSource()==wr.b6) 
 		{
 			try
 			{
 				out.write((Function.EXIT+"|\n").getBytes());
 				/*
-				 * ³ª°¡±â => ¿äÃ» 
+				 * ë‚˜ê°€ê¸° => ìš”ì²­ 
 				 *         ===
-				 *         Ã³¸® ==> ¼­¹ö°¡ Ã³¸®ÇØÁÜ. 
-				 *         °á°úÃâ·Â ==> Å¬¶óÀÌ¾ğÆ®°¡ °á°ú Ãâ·Â. 
+				 *         ì²˜ë¦¬ ==> ì„œë²„ê°€ ì²˜ë¦¬í•´ì¤Œ. 
+				 *         ê²°ê³¼ì¶œë ¥ ==> í´ë¼ì´ì–¸íŠ¸ê°€ ê²°ê³¼ ì¶œë ¥. 
 				*/
 			}catch(Exception ex) {}
 		}
-		else if(e.getSource()==wr.b1) // ¹æ¸¸µé±â ¹öÆ° Å¬¸¯ ½Ã
+		else if(e.getSource()==wr.b1) // ë°©ë§Œë“¤ê¸° ë²„íŠ¼ í´ë¦­ ì‹œ
 		{
 			
 			mr.tf.setText(""); 
-			// ¸Å¹ø Ã¢À» »õ·Î »ı¼ºÇÏ´Â°Ô ¾Æ´Ï¹Ç·Î, ÀÌÀü °ªÀÌ ³²¾ÆÀÖÀ¸´Ï, ¹öÆ° ´©¸¦¶§¸¶´Ù °ª ºñ¿öÁà¾ßÇÔ 
-			// ºó »óÅÂ·Î ¸¸µé±â À§ÇÏ¿©
+			// ë§¤ë²ˆ ì°½ì„ ìƒˆë¡œ ìƒì„±í•˜ëŠ”ê²Œ ì•„ë‹ˆë¯€ë¡œ, ì´ì „ ê°’ì´ ë‚¨ì•„ìˆìœ¼ë‹ˆ, ë²„íŠ¼ ëˆ„ë¥¼ë•Œë§ˆë‹¤ ê°’ ë¹„ì›Œì¤˜ì•¼í•¨ 
+			// ë¹ˆ ìƒíƒœë¡œ ë§Œë“¤ê¸° ìœ„í•˜ì—¬
 			mr.rb1.setSelected(true);
 			mr.box.setSelectedIndex(0);
 			mr.la4.setVisible(false);
@@ -152,11 +158,11 @@ public class MainForm extends JFrame implements ActionListener, Runnable{ // <==
 		}
 		else if(e.getSource()==mr.b1)
 		{
-			// 1. ¹æ ÀÌ¸§ 
+			// 1. ë°© ì´ë¦„ 
 			String rn=mr.tf.getText();
 			if(rn.length()<1)
 			{
-				JOptionPane.showMessageDialog(this, "¹æ ÀÌ¸§À» ÀÔ·ÂÇÏ¼¼¿ä");
+				JOptionPane.showMessageDialog(this, "ë°© ì´ë¦„ì„ ì…ë ¥í•˜ì„¸ìš”");
 				mr.tf.requestFocus();
 				return;
 			}
@@ -165,33 +171,33 @@ public class MainForm extends JFrame implements ActionListener, Runnable{ // <==
 				String roomName=wr.model1.getValueAt(i, 0).toString();
 				if(rn.equals(roomName))
 				{
-					JOptionPane.showMessageDialog(this, "ÀÌ¹Ì Á¸ÀçÇÏ´Â ¹æÀÔ´Ï´Ù.\n´Ù½Ã ÀÔ·ÂÇÏ¼¼¿ä.");
+					JOptionPane.showMessageDialog(this, "ì´ë¯¸ ì¡´ì¬í•˜ëŠ” ë°©ì…ë‹ˆë‹¤.\në‹¤ì‹œ ì…ë ¥í•˜ì„¸ìš”.");
 					mr.tf.setText("");
 					mr.tf.requestFocus();
 					return;
 				}
 			}
 			
-			// °ø°³ ºñ°ø°³ 
-			String rs=""; // »óÅÂ (room status)
-			String rp=""; // ºñ¹Ğ¹øÈ£ (room pwd) 
+			// ê³µê°œ ë¹„ê³µê°œ 
+			String rs=""; // ìƒíƒœ (room status)
+			String rp=""; // ë¹„ë°€ë²ˆí˜¸ (room pwd) 
 			if(mr.rb1.isSelected())
 			{
-				rs="°ø°³";
-				rp=" "; //¹İµå½Ã °ø¹é ÇÏ³ª Áà¾ßÇÔ!¡Ú //""ÇØ¹ö¸®¸é null·Î ÀÎ½ÄÇØ¼­... ¾øÀ» ¶§ ¹æ ¸¸µé ¼ö°¡ ¾øÀ½ 
+				rs="ê³µê°œ";
+				rp=" "; //ë°˜ë“œì‹œ ê³µë°± í•˜ë‚˜ ì¤˜ì•¼í•¨!â˜… //""í•´ë²„ë¦¬ë©´ nullë¡œ ì¸ì‹í•´ì„œ... ì—†ì„ ë•Œ ë°© ë§Œë“¤ ìˆ˜ê°€ ì—†ìŒ 
 			}
 			else
 			{
-				rs="ºñ°ø°³";
+				rs="ë¹„ê³µê°œ";
 				rp=String.valueOf(mr.pf.getPassword());
 			}
 			
-			// ÀÎ¿øÃ¼Å©
+			// ì¸ì›ì²´í¬
 			int inwon=mr.box.getSelectedIndex()+2;
-			// mr¿¡¼­ box¸¦ ¸¸µé ¶§, ÀÎ¿ø¼ö¸¦ 2¸íºÎÅÍ ½ÃÀÛÇÏ°Ô ¸¸µé¾î³ö¼­ '+2' ÇÑ°ÅÀÓ. 
-			// (index´Â Ç×»ó 0ºÎÅÍ ½ÃÀÛÇÏ´Ï±î, index=0ÀÏ¶§ ÀÎ¿ø¼ö2¸í ÀÌ·¸°Ô µÇ´Ï±î...) 
+			// mrì—ì„œ boxë¥¼ ë§Œë“¤ ë•Œ, ì¸ì›ìˆ˜ë¥¼ 2ëª…ë¶€í„° ì‹œì‘í•˜ê²Œ ë§Œë“¤ì–´ë†”ì„œ '+2' í•œê±°ì„. 
+			// (indexëŠ” í•­ìƒ 0ë¶€í„° ì‹œì‘í•˜ë‹ˆê¹Œ, index=0ì¼ë•Œ ì¸ì›ìˆ˜2ëª… ì´ë ‡ê²Œ ë˜ë‹ˆê¹Œ...) 
 			
-			// ¼­¹ö·Î Àü¼Û
+			// ì„œë²„ë¡œ ì „ì†¡
 			try
 			{
 				out.write((Function.MAKEROOM+"|"+rn+"|"+rs+"|"+rp+"|"+inwon+"\n").getBytes());
@@ -206,37 +212,37 @@ public class MainForm extends JFrame implements ActionListener, Runnable{ // <==
 
 	}
 	
-	// ¼­¹ö¶û ¿¬°á - ·Î±×ÀÎ ¹öÆ° ´­·¶À» ¶§ È£Ãâ½ÃÅ°¸é µÊ 
+	// ì„œë²„ë‘ ì—°ê²° - ë¡œê·¸ì¸ ë²„íŠ¼ ëˆŒë €ì„ ë•Œ í˜¸ì¶œì‹œí‚¤ë©´ ë¨ 
 	public void connection(String userData) 
 	{
 		try
 		{
-			s=new Socket("localhost",3355); // ¼ÒÄÏ ¿¬°á : 'ÀüÈ­°É±â' °°Àº ¿ªÇÒ! ³ªÁß¿¡ "localhost"¸¦ "¼­¹ö ÄÄÅÍ IP"·Î ¹Ù²Ù¸é µÊ
-			// ¼Û½Å(OutputStream) / ¼ö½Å(BufferedReader)  - Âü°í) ¼Û½ÅÀº Ç×»ó À¯Àú°¡, ¼ö½ÅÀº Ç×»ó ¾²·¹µå°¡. 
-			// ¼Û½Å
+			s=new Socket("localhost",3355); // ì†Œì¼“ ì—°ê²° : 'ì „í™”ê±¸ê¸°' ê°™ì€ ì—­í• ! ë‚˜ì¤‘ì— "localhost"ë¥¼ "ì„œë²„ ì»´í„° IP"ë¡œ ë°”ê¾¸ë©´ ë¨
+			// ì†¡ì‹ (OutputStream) / ìˆ˜ì‹ (BufferedReader)  - ì°¸ê³ ) ì†¡ì‹ ì€ í•­ìƒ ìœ ì €ê°€, ìˆ˜ì‹ ì€ í•­ìƒ ì“°ë ˆë“œê°€. 
+			// ì†¡ì‹ 
 			out=s.getOutputStream();
 			in=new BufferedReader(new InputStreamReader(s.getInputStream()));
 			
-			// ·Î±×ÀÎ µ¥ÀÌÅÍ º¸³»±â 
-			// 100|hong|È«±æµ¿|³²ÀÚ|´ë±â½Ç\n   ÀÌ·¸°Ô ³Ñ¾î°¨
+			// ë¡œê·¸ì¸ ë°ì´í„° ë³´ë‚´ê¸° 
+			// 100|hong|í™ê¸¸ë™|ë‚¨ì|ëŒ€ê¸°ì‹¤\n   ì´ë ‡ê²Œ ë„˜ì–´ê°
 			out.write((Function.LOGIN+"|"+userData+"\n").getBytes()); 
-			// 1¹ÙÀÌÆ® Àü¼ÛÀÎµ¥ ÇÑ±Û(2byte)¶ó¼­ 1byte·Î º¯°æ  (¿ø·¡ ³×Æ®Ÿp Åë½ÅÀÇ ´ÜÀ§´Â 1¹ÙÀÌÆ®ÀÓ)			
+			// 1ë°”ì´íŠ¸ ì „ì†¡ì¸ë° í•œê¸€(2byte)ë¼ì„œ 1byteë¡œ ë³€ê²½  (ì›ë˜ ë„¤íŠ¸ì›¤ í†µì‹ ì˜ ë‹¨ìœ„ëŠ” 1ë°”ì´íŠ¸ì„)			
 		}catch(Exception ex) {}
-		// ¼­¹ö·ÎºÎÅÍ µ¥ÀÌÅÍ¸¦ ÀĞ±â ½ÃÀÛ
+		// ì„œë²„ë¡œë¶€í„° ë°ì´í„°ë¥¼ ì½ê¸° ì‹œì‘
 		new Thread(this).start();
 	}
 	
-	// ¼­¹ö·ÎºÎÅÍ µ¥ÀÌÅÍ¸¦ ¼ö½ÅÇÏ´Â ±â´É
+	// ì„œë²„ë¡œë¶€í„° ë°ì´í„°ë¥¼ ìˆ˜ì‹ í•˜ëŠ” ê¸°ëŠ¥
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		// ¼ö½ÅÇßÀ» ¶§ ¾î¶»°Ô Ã³¸®ÇÒ °ÍÀÎ°¡ (¾²·¹µå)
+		// ìˆ˜ì‹ í–ˆì„ ë•Œ ì–´ë–»ê²Œ ì²˜ë¦¬í•  ê²ƒì¸ê°€ (ì“°ë ˆë“œ)
 		try
 		{
 			while(true)
 			{
-				String msg=in.readLine(); // msg°¡ ¼­¹ö¿¡¼­ 100|hong|È«±æµ¿|³²ÀÚ|´ë±â½Ç\n ¿ä·¸°Ô ³¯¾Æ¿È 
-				StringTokenizer st=new StringTokenizer(msg,"|"); // StringTokenizer·Î | ±âÁØÀ¸·Î ±ÛÀÚ ÀÚ¸¥´Ù. 
+				String msg=in.readLine(); // msgê°€ ì„œë²„ì—ì„œ 100|hong|í™ê¸¸ë™|ë‚¨ì|ëŒ€ê¸°ì‹¤\n ìš”ë ‡ê²Œ ë‚ ì•„ì˜´ 
+				StringTokenizer st=new StringTokenizer(msg,"|"); // StringTokenizerë¡œ | ê¸°ì¤€ìœ¼ë¡œ ê¸€ì ìë¥¸ë‹¤. 
 				int protocol=Integer.parseInt(st.nextToken());
 				switch(protocol)
 				{
@@ -244,14 +250,14 @@ public class MainForm extends JFrame implements ActionListener, Runnable{ // <==
 					{
 						String[] data= {
 							st.nextToken(), //id
-							st.nextToken(), //ÀÌ¸§
-							st.nextToken(), //¼ºº°
-							st.nextToken() //À§Ä¡
+							st.nextToken(), //ì´ë¦„
+							st.nextToken(), //ì„±ë³„
+							st.nextToken() //ìœ„ì¹˜
 						};
-						wr.model2.addRow(data); //model2°¡ µÎ¹øÂ° Å×ÀÌºí(À¯Àú¸®½ºÆ®)ÀÓ!
+						wr.model2.addRow(data); //model2ê°€ ë‘ë²ˆì§¸ í…Œì´ë¸”(ìœ ì €ë¦¬ìŠ¤íŠ¸)ì„!
 						break;
 					} 
-					case Function.MYLOG: //¼­¹ö¿¡¼­ MYLOG(Ã¢ ¹Ù²ã¶ó)°í ¸»ÇÏ¸é ¼öÇàÇØÁÜ 
+					case Function.MYLOG: //ì„œë²„ì—ì„œ MYLOG(ì°½ ë°”ê¿”ë¼)ê³  ë§í•˜ë©´ ìˆ˜í–‰í•´ì¤Œ 
 					{
 						String id=st.nextToken();
 						setTitle(id);
@@ -263,15 +269,15 @@ public class MainForm extends JFrame implements ActionListener, Runnable{ // <==
 						wr.tp.append(st.nextToken()+"\n");
 						break;
 					}
-					case Function.EXIT: // Á¾·áÃ³¸® - to ³²¾Æ ÀÖ´Â »ç¶÷
+					case Function.EXIT: // ì¢…ë£Œì²˜ë¦¬ - to ë‚¨ì•„ ìˆëŠ” ì‚¬ëŒ
 					{
 						String id=st.nextToken();
-						for(int i=0;i<wr.model2.getRowCount();i++) // Å×ÀÌºí¿¡ ÀúÀåµÈ Çà(ÁÙ)ÀÇ °¹¼ö¸¦ ¼¼¼­, ÇÑ ÁÙ ÇÑ ÁÙ °Ë»öÇØº½ 
+						for(int i=0;i<wr.model2.getRowCount();i++) // í…Œì´ë¸”ì— ì €ì¥ëœ í–‰(ì¤„)ì˜ ê°¯ìˆ˜ë¥¼ ì„¸ì„œ, í•œ ì¤„ í•œ ì¤„ ê²€ìƒ‰í•´ë´„ 
 						{
 							String mid=wr.model2.getValueAt(i, 0).toString(); 
-							// getValueAt : °ªÀ» ÀĞ¾î¿È
-							// getValueAt(i,0) : id´Â ¿­ÀÇ Ã¹¹øÂ°(¿­¹øÈ£ 0)¿¡ ÀÖÀ¸´Ï±î
-							// toString : getValueAtÀÌ ¸®ÅÏÇüÀÌ Object¿©¼­ ¾ê¸¦ StringÀ¸·Î º¯°æ½ÃÄÑÁà¾ßÇÔ
+							// getValueAt : ê°’ì„ ì½ì–´ì˜´
+							// getValueAt(i,0) : idëŠ” ì—´ì˜ ì²«ë²ˆì§¸(ì—´ë²ˆí˜¸ 0)ì— ìˆìœ¼ë‹ˆê¹Œ
+							// toString : getValueAtì´ ë¦¬í„´í˜•ì´ Objectì—¬ì„œ ì–˜ë¥¼ Stringìœ¼ë¡œ ë³€ê²½ì‹œì¼œì¤˜ì•¼í•¨
 							if(mid.equals(id)) 
 							{
 								wr.model2.removeRow(i);
@@ -280,25 +286,100 @@ public class MainForm extends JFrame implements ActionListener, Runnable{ // <==
 						}
 						break;
 					}
-					case Function.MYEXIT: // Á¾·áÃ³¸® - to ³ª°¡´Â »ç¶÷ 
+					case Function.MYEXIT: // ì¢…ë£Œì²˜ë¦¬ - to ë‚˜ê°€ëŠ” ì‚¬ëŒ 
 					{
-						dispose(); // ¸Ş¸ğ¸® È¸¼ö 
-						System.exit(0); // ÇÁ·Î±×·¥ Á¾·á 
+						dispose(); // ë©”ëª¨ë¦¬ íšŒìˆ˜ 
+						System.exit(0); // í”„ë¡œê·¸ë¨ ì¢…ë£Œ 
 					}
 					case Function.MAKEROOM: 
 					{
 						String[] data= {
-								st.nextToken(), // ¹æÀÌ¸§
-								st.nextToken(), // ¹æ»óÅÂ (°ø°³/ºñ°ø°³)
-								st.nextToken() // ÀÎ¿ø 1/6 
+								st.nextToken(), // ë°©ì´ë¦„
+								st.nextToken(), // ë°©ìƒíƒœ (ê³µê°œ/ë¹„ê³µê°œ)
+								st.nextToken() // ì¸ì› 1/6 
 								};
-						wr.model1.addRow(data); // °¡º¯ÇüÀÌ´Ï±î add ÇÒ ¶§¸¶´Ù ÇÑ ÁÙ ¾¿ ´Ã¾î³² 
+						wr.model1.addRow(data); // ê°€ë³€í˜•ì´ë‹ˆê¹Œ add í•  ë•Œë§ˆë‹¤ í•œ ì¤„ ì”© ëŠ˜ì–´ë‚¨ 
 						break;
 					}
+					
+					// [ë‹¤ì‹œ] 
+					case Function.ROOMADD:
+					{
+						for(int i=0;i<6;i++)
+						{
+							if(gr.sw[i]==false)
+							{
+								gr.sw[i]=true;
+								gr.pans[i].removeAll();
+								gr.pans[i].setLayout(new BorderLayout());
+								gr.pans[i].add("Center",new JLabel(new Image(is)));
+								gr.pans[i].validate();
+								gr.ids[i].setText(id);
+								break;
+							}
+						}
+						break;
+					}
+					case Function.ROOMCHAT:
+					{
+						gr.ta.append(st.nextToken()+"\n");
+						break;
+					}
+					
 					
 				}
 			}
 		}catch(Exception ex) {}
+	}
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getSource()==wr.table1)
+		{
+			if(e.getClickCount()==2)
+			{
+				int row=wr.table1.getSelectedRow(); // getSelectedRow : ì„ íƒí•œ rowë¥¼ ê°€ì§€ê³ ì˜´ 
+				String rn=wr.model1.getValueAt(row,0).toString();
+				String inwon=wr.model1.getValueAt(row,2).toString(); 
+				//String state=wr.model1.getValueAt(row,1).toString();
+				StringTokenizer st=new StringTokenizer(inwon,"/");  //ex) 1/5
+				int no1=Integer.parseInt(st.nextToken()); // ex) 1
+				int no2=Integer.parseInt(st.nextToken()); // ex) 5
+				if(no1==no2) // ë°©ì— ë“¤ì–´ê°ˆ ìˆ˜ X
+				{
+					JOptionPane.showMessageDialog(this,"ì´ë¯¸ ë°© ì¸ì›ì´ ì°¼ìŠµë‹ˆë‹¤.\n ë‹¤ë¥¸ ë°©ì„ ì„ íƒí•˜ì„¸ìš”.");
+					
+				}
+				else // ë°©ì— ë“¤ì–´ê°ˆ ìˆ˜ O  
+				{
+					try
+					{
+						out.write((Function.ROOMIN+"|"+rn+"\n").getBytes());
+					}catch(Exception ex) {}
+					
+				}
+			}
+		}
+	}
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	
