@@ -39,6 +39,8 @@ public class MainForm extends JFrame implements ActionListener, Runnable, MouseL
 	 *        ==> 그러면 서버에서 받아서 관련된 사람들한테 메세지를 날려줌. 
 	 * 2) 서버에서 들어오는 데이터 => Thread => 출력 (Function) 
 	*/
+	String myRoom;
+	
 	MainForm(){
 		//위에 있을수록 창이 먼저 뜬다 ==> 로그인창>WR(WatingRoom)창 
 		setLayout(card);

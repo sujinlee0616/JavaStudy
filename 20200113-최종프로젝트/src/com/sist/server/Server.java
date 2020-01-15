@@ -155,11 +155,65 @@ public class Server implements Runnable{
 							
 							roomVc.add(room);
 							pos=room.roomName; //pos가 방 이름으로 바뀐다.
-							
+							room.bang=id;
 							messageAll(Function.MAKEROOM+"|"
 									+room.roomName+"|"
 									+room.roomState+"|"
 									+room.current+"/"+room.maxcount); // 인원수 '1/6' 이렇게 나오게끔 
+							
+							// 방에 들어가게 만든다
+							messageTo(Function.ROOMIN+"|"+room.roomName+"|"
+									+id+"|"+sex+"|"+avatar+"|"+room.bang);
+							break;
+						}
+						case Function.ROOMIN:
+						{
+							// Function.ROOMIN+"|"+rn 로 들어옴 
+							String rn=st.nextToken();
+							/*
+							 *	1. 방 이름을 받는다.
+							 *	2. 방을 찾는다.(roomVc)
+							 * 	3. pos, current를 변경
+							 *  ====================
+							 *    1) 방에 있는 사람 처리 => ROOMADD
+							 *    	┗ ① 방에 입장하는 사람의 정보 전송 (id, avatar, ...)
+							 *    	┗ ② 입장메시지 전송 
+							 *    2) 방에 들어가는 사람 처리
+							 *    	┗ ① 방에 들어가라 => ROOMIN
+							 *      ┗ ② 방에 있는 사람들의 정보를 보내준다
+							 *    3) 대기실 변경
+							 *    	┗ 인원수가 변경되면 메시지 전송 
+							*/
+							for(Room room:roomVc)
+							{
+								if(rn.equals(room.roomName))
+								{
+									pos=room.roomName;
+									room.current++;
+									
+									for(Client user:room.userVc)
+									{
+										user.messageTo(Function.ROOMADD+"|"
+												+id+"|"+sex+"|"+avatar+"|"+room.bang);
+										user.messageTo(Function.ROOMCHAT
+												+"|[알림☞]"+id+"님이 입장하셨습니다.");
+									}
+									
+									// 본인 처리
+									room.userVc.add(this);
+									messageTo(Function.ROOMIN+"|"+room.roomName+"|"
+											   +id+"|"+sex+"|"+avatar+"|"+room.bang);
+									
+									for(Client user:room.userVc)
+									{
+										if(!id.equals(user.id))
+										{
+											messageTo(Function.ROOMADD+"|"
+													+user.id+"|"+user.sex+"|"+user.avatar+"|"+room.bang);
+										}
+									}
+								}
+							}
 							break;
 						}
 					}

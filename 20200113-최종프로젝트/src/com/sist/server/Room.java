@@ -5,6 +5,7 @@ import java.util.*;
 public class Room {
 	String roomName,roomState,roomPwd;
 	int current,maxcount; // 현재인원수, 최대인원수 
+	String bang="";
 	
 	Vector<Server.Client> userVc=new Vector<Server.Client>(); // 방 안에 들어간 사람들만 제어하기 위해 Vector를 만들었음 
 	// Vector<Client> userVc=new Vector<Client>(); 라고 쓸수 없음. 
