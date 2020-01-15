@@ -52,7 +52,8 @@ public class WaitRoom extends JPanel {
 		add(js1);
 		add(js2);
 		
-		
+//		String[] data= {"»¡¸®¿Í","°ø°³","1/6"};
+//		model1.addRow(data);
 		
 	}
 }

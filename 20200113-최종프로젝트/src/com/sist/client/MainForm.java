@@ -19,6 +19,8 @@ public class MainForm extends JFrame implements ActionListener, Runnable{ // <==
 	// 이미 JFrame 상속 받았으므로 상속 불가 ==> 쓰레드 상속 불가능하므로 implements Runnable 한다! 
 	Login login=new Login();
 	WaitRoom wr=new WaitRoom();
+	GameRoom gr=new GameRoom();
+	MakeRoom mr=new MakeRoom(); 
 	CardLayout card=new CardLayout(); // 윈도우 창은 그대로 냅두고 tab 변경하기 위해서. 
 	
 	// 서버 연결과 관련된 라이브러리
@@ -35,13 +37,22 @@ public class MainForm extends JFrame implements ActionListener, Runnable{ // <==
 		//위에 있을수록 창이 먼저 뜬다 ==> 로그인창>WR(WatingRoom)창 
 		setLayout(card);
 		add("LOGIN",login);
+		add("GAME",gr);
 		add("WR",wr);
 		//add("Center",login);
 		
-		setSize(1024,768);
+		setBounds(448,156,1024,768); // 가운데 좌표 설정
 		setVisible(true); // 윈도우 보여라
+		
+		setResizable(false); // 창 크기 수정 불가능하게 (최대화 버튼도 비활성화됨) 
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); // X버튼 못 누르게 		
 		login.b1.addActionListener(this);
 		wr.tf.addActionListener(this);
+		wr.b6.addActionListener(this); // 대기실 나가기 버튼 
+		wr.b1.addActionListener(this); // 대기실 방만들기 버튼 
+		
+		mr.b1.addActionListener(this); // 방만들기 버튼 => JDialog의 '방만들기' 버튼  
+		mr.b2.addActionListener(this); //  방만들기 버튼 => JDialog의 '취소 버튼  
 	}
 	public static void main(String[] args) {
 		try {
@@ -111,6 +122,87 @@ public class MainForm extends JFrame implements ActionListener, Runnable{ // <==
 			
 			wr.tf.setText("");
 		}
+		// 대기실 나가기 버튼 클릭 시 ==> 서버는 Socket을 끊고, Vector를 지운다.  
+		else if(e.getSource()==wr.b6) 
+		{
+			try
+			{
+				out.write((Function.EXIT+"|\n").getBytes());
+				/*
+				 * 나가기 => 요청 
+				 *         ===
+				 *         처리 ==> 서버가 처리해줌. 
+				 *         결과출력 ==> 클라이언트가 결과 출력. 
+				*/
+			}catch(Exception ex) {}
+		}
+		else if(e.getSource()==wr.b1) // 방만들기 버튼 클릭 시
+		{
+			
+			mr.tf.setText(""); 
+			// 매번 창을 새로 생성하는게 아니므로, 이전 값이 남아있으니, 버튼 누를때마다 값 비워줘야함 
+			// 빈 상태로 만들기 위하여
+			mr.rb1.setSelected(true);
+			mr.box.setSelectedIndex(0);
+			mr.la4.setVisible(false);
+			mr.pf.setVisible(false);
+			mr.pf.setText("");
+			mr.tf.requestFocus();
+			mr.setVisible(true);
+		}
+		else if(e.getSource()==mr.b1)
+		{
+			// 1. 방 이름 
+			String rn=mr.tf.getText();
+			if(rn.length()<1)
+			{
+				JOptionPane.showMessageDialog(this, "방 이름을 입력하세요");
+				mr.tf.requestFocus();
+				return;
+			}
+			for(int i=0;i<wr.model1.getRowCount();i++)
+			{
+				String roomName=wr.model1.getValueAt(i, 0).toString();
+				if(rn.equals(roomName))
+				{
+					JOptionPane.showMessageDialog(this, "이미 존재하는 방입니다.\n다시 입력하세요.");
+					mr.tf.setText("");
+					mr.tf.requestFocus();
+					return;
+				}
+			}
+			
+			// 공개 비공개 
+			String rs=""; // 상태 (room status)
+			String rp=""; // 비밀번호 (room pwd) 
+			if(mr.rb1.isSelected())
+			{
+				rs="공개";
+				rp=" "; //반드시 공백 하나 줘야함!★ //""해버리면 null로 인식해서... 없을 때 방 만들 수가 없음 
+			}
+			else
+			{
+				rs="비공개";
+				rp=String.valueOf(mr.pf.getPassword());
+			}
+			
+			// 인원체크
+			int inwon=mr.box.getSelectedIndex()+2;
+			// mr에서 box를 만들 때, 인원수를 2명부터 시작하게 만들어놔서 '+2' 한거임. 
+			// (index는 항상 0부터 시작하니까, index=0일때 인원수2명 이렇게 되니까...) 
+			
+			// 서버로 전송
+			try
+			{
+				out.write((Function.MAKEROOM+"|"+rn+"|"+rs+"|"+rp+"|"+inwon+"\n").getBytes());
+			}catch(Exception ex) {}
+			mr.setVisible(false);
+			
+		}
+		else if(e.getSource()==mr.b2)
+		{
+			mr.setVisible(false);
+		}
 
 	}
 	
@@ -171,6 +263,39 @@ public class MainForm extends JFrame implements ActionListener, Runnable{ // <==
 						wr.tp.append(st.nextToken()+"\n");
 						break;
 					}
+					case Function.EXIT: // 종료처리 - to 남아 있는 사람
+					{
+						String id=st.nextToken();
+						for(int i=0;i<wr.model2.getRowCount();i++) // 테이블에 저장된 행(줄)의 갯수를 세서, 한 줄 한 줄 검색해봄 
+						{
+							String mid=wr.model2.getValueAt(i, 0).toString(); 
+							// getValueAt : 값을 읽어옴
+							// getValueAt(i,0) : id는 열의 첫번째(열번호 0)에 있으니까
+							// toString : getValueAt이 리턴형이 Object여서 얘를 String으로 변경시켜줘야함
+							if(mid.equals(id)) 
+							{
+								wr.model2.removeRow(i);
+								break;
+							}
+						}
+						break;
+					}
+					case Function.MYEXIT: // 종료처리 - to 나가는 사람 
+					{
+						dispose(); // 메모리 회수 
+						System.exit(0); // 프로그램 종료 
+					}
+					case Function.MAKEROOM: 
+					{
+						String[] data= {
+								st.nextToken(), // 방이름
+								st.nextToken(), // 방상태 (공개/비공개)
+								st.nextToken() // 인원 1/6 
+								};
+						wr.model1.addRow(data); // 가변형이니까 add 할 때마다 한 줄 씩 늘어남 
+						break;
+					}
+					
 				}
 			}
 		}catch(Exception ex) {}

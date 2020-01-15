@@ -27,7 +27,7 @@ public class MemberDAO {
 	{
 		try 
 		{
-			conn=DriverManager.getConnection(URL,"hr","PASSWORD");
+			conn=DriverManager.getConnection(URL,"hr","happy");
 		}catch(Exception ex) {}
 	}
 	
@@ -79,13 +79,14 @@ public class MemberDAO {
 				String mpwd=rs.getString(2);
 				String name=rs.getString(3);
 				String sex=rs.getString(4);
+				int avatar=rs.getInt(5);
 						
 				rs.close();
 				
 				if(mpwd.equals(pwd)) 
 				{
 					// ·Î±×ÀÎ
-					result=mid+"|"+name+"|"+sex;
+					result=mid+"|"+name+"|"+sex+"|"+avatar;
 				}
 				
 				else 
