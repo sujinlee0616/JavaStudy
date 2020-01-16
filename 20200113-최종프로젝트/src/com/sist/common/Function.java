@@ -34,7 +34,12 @@ public class Function {
 	public static final int WAITUPDATE=250; // 대기실에서 게임방 리스트 및 유저리스트 업데이트. 
 	public static final int POSCHANGE=260; // 이 사람이 방에 들어가면 대기실을 방 이름으로 바꿔치기 해줌. 
 	public static final int WAITCHAT=270; // 대기실에서 채팅 
-	public static final int ROOMCHAT=280; // 게임방에서 채팅 
+	public static final int ROOMCHAT=280; // 게임방에서 채팅
+	
+	public static final int KANG=300; //강퇴
+	public static final int INVITE=310;
+	public static final int INVITE_YES=320;
+	public static final int INVITE_NO=330;
 	
 	public static final int EXIT=900; // 기존에 있는 사람들에게 나간 애를 알려줌 
 	public static final int MYEXIT=910; // 내가 나감 

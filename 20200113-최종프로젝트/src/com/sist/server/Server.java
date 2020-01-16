@@ -164,6 +164,8 @@ public class Server implements Runnable{
 							// 방에 들어가게 만든다
 							messageTo(Function.ROOMIN+"|"+room.roomName+"|"
 									+id+"|"+sex+"|"+avatar+"|"+room.bang);
+							// 대기실 > 유저 리스트 > 방 만든 유저의 상태를 '대기실'에서 '방이름'으로 변경 
+							messageAll(Function.POSCHANGE+"|"+id+"|"+pos);
 							break;
 						}
 						case Function.ROOMIN:
@@ -190,16 +192,16 @@ public class Server implements Runnable{
 								{
 									pos=room.roomName;
 									room.current++;
-									
+									// 1) 방에 있는 사람 처리
 									for(Client user:room.userVc)
 									{
 										user.messageTo(Function.ROOMADD+"|"
 												+id+"|"+sex+"|"+avatar+"|"+room.bang);
 										user.messageTo(Function.ROOMCHAT
-												+"|[알림☞]"+id+"님이 입장하셨습니다.");
+												+"|[알림☞] "+id+"님이 입장하셨습니다.");
 									}
 									
-									// 본인 처리
+									// 2) 본인 처리
 									room.userVc.add(this);
 									messageTo(Function.ROOMIN+"|"+room.roomName+"|"
 											   +id+"|"+sex+"|"+avatar+"|"+room.bang);
@@ -212,6 +214,99 @@ public class Server implements Runnable{
 													+user.id+"|"+user.sex+"|"+user.avatar+"|"+room.bang);
 										}
 									}
+									// 3) 대기실 갱신 
+									messageAll(Function.WAITUPDATE+"|"+room.roomName+"|"
+											+room.current+"|"+room.maxcount+"|"+id+"|"+pos);
+								}
+							}
+							
+							
+							
+							// 전체적으로 전송
+							/*
+							 *	대기실 => messageAll
+							 *	방,개인 -> messageTo
+							 *	
+							 *	==> 행위자 처리
+							 *	==> 남아있는 사람 처리 
+							 *	==> 대기실 처리 
+							*/
+							break;
+						}
+						case Function.ROOMCHAT:
+						{
+							String rn=st.nextToken();
+							String strMsg=st.nextToken();  
+							// msg가 while문 안에 이미 선언되어 있으므로 msg 쓰면 안 됨
+							for(Room room:roomVc)
+							{
+								if(rn.equals(room.roomName))
+								{
+									for(Client user:room.userVc)
+									{
+										user.messageTo(Function.ROOMCHAT+"|["+name+"]"+strMsg);
+									}
+								}
+							}
+							
+							break;
+						}
+						case Function.ROOMOUT:
+						{
+							// 방 찾기
+							String rn=st.nextToken();
+							for(int i=0;i<roomVc.size();i++)
+							{
+								Room room=roomVc.get(i);
+								if(rn.equals(room.roomName)) 
+								{
+									pos="대기실"; // 위치변경 
+									room.current--; // 현재인원 감소 
+									
+									// 1) 방에 남아있는 사람들에게 전송
+									for(Client user:room.userVc)
+									{
+										if(!user.id.equals(id)) // 내가 나가는 사람이 아니라면
+										{
+											user.messageTo(Function.ROOMOUT+"|"+id); // 나가는사람(id)을 빼라 
+											user.messageTo(Function.ROOMCHAT+"|[알림☞] "+name+"님이 퇴장하셨습니다."); // 채팅창에 퇴장 메시지 노출  
+										}
+									}									
+									// 2) 본인처리 - 실제 나가는 사람에게 전송
+									for(int j=0;j<room.userVc.size();j++)
+									{
+										Client user=room.userVc.get(j);
+										if(id.equals(user.id)) // 내가 나가는 사람이라면
+										{
+											// userVc에서 제거 
+											 room.userVc.remove(j);
+											 messageTo(Function.MYROOMOUT+"|");
+											 break;
+										}
+									}									
+									// 3) 대기실 처리 
+									// 대기실 갱신 
+									messageAll(Function.WAITUPDATE+"|"+room.roomName+"|"
+											+room.current+"|"+room.maxcount+"|"+id+"|"+pos);
+									if(room.current==0)
+									{
+										roomVc.remove(i);
+										break;
+									}
+								}
+							}
+							break;
+						}
+						case Function.KANG:
+						{
+							String rn=st.nextToken();
+							String yid=st.nextToken();
+							for(Client user:waitVc)
+							{
+								if(yid.equals(user.id))
+								{
+									user.messageTo(Function.KANG+"|"+rn);
+									break;
 								}
 							}
 							break;
