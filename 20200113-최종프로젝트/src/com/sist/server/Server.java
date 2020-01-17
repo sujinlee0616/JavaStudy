@@ -64,7 +64,7 @@ public class Server implements Runnable{
 			try
 			{
 				this.s=s;
-				out=s.getOutputStream(); //클라이언트의 저장 위치 =>
+				out=s.getOutputStream(); //클라이언트의 저장 위치 => 읽어갈 수 있게 만든다. 
 				in=new BufferedReader(new InputStreamReader(s.getInputStream()));
 				// InputStreamReader(필터스트림) => 1byte를 받아서 2byte로 변환  
 			}catch(Exception ex) {}
@@ -91,7 +91,7 @@ public class Server implements Runnable{
 							sex=st.nextToken();
 							avatar=Integer.parseInt(st.nextToken()); 
 							// nextToken은 덜 써도 되는데, 초과하면 오류가 남. Array번호라서 범위를 벗어나면 안 됨.(arrayindexoutofboundsexception 일어남)
-							// 4개를 보냈는데 존재하지 않는 5번째꺼를 호출하면 오류남. 
+							// 예를 들어, 4개를 보냈는데 존재하지 않는 5번째꺼를 호출하면 오류난다는 것.   
 							pos="대기실";
 							// 이 네 개의 정보를 모든 사람에게 보내야 
 							
@@ -173,26 +173,28 @@ public class Server implements Runnable{
 							// Function.ROOMIN+"|"+rn 로 들어옴 
 							String rn=st.nextToken();
 							/*
-							 *	1. 방 이름을 받는다.
-							 *	2. 방을 찾는다.(roomVc)
-							 * 	3. pos, current를 변경
-							 *  ====================
-							 *    1) 방에 있는 사람 처리 => ROOMADD
-							 *    	┗ ① 방에 입장하는 사람의 정보 전송 (id, avatar, ...)
-							 *    	┗ ② 입장메시지 전송 
-							 *    2) 방에 들어가는 사람 처리
-							 *    	┗ ① 방에 들어가라 => ROOMIN
-							 *      ┗ ② 방에 있는 사람들의 정보를 보내준다
-							 *    3) 대기실 변경
-							 *    	┗ 인원수가 변경되면 메시지 전송 
-							*/
+							 * 	1. 방 이름을 받는다
+							 * 	2. 방을 찾는다 (roomVc)
+							 *	3. pos, current를 변경 
+							 * 	====================
+							 * 	 1) 이미 방에 있는 사람들에 대한 처리 (ROOMAD) 
+							 * 		┗ ① 방에 입장하는 사람의 정보를 전송 (id, avatar, ...) 
+							 * 		┗ ② 입장메시지 전송 
+							 * 	 2) 방에 들어가는 사람 처리
+							 * 		┗ ① 방에 들어가라 => ROOMIN
+							 * 		┗ ② 방에 있는 사람들의 정보를 보내준다  
+							 * 	 3) 대기실 변경 
+							 * 		┗ 인원 수가 변경 => 메시지 변경  
+							 * 
+							 */
 							for(Room room:roomVc)
 							{
-								if(rn.equals(room.roomName))
+								if(rn.equals(room.roomName)) // 방 찾기 
 								{
 									pos=room.roomName;
 									room.current++;
 									// 1) 방에 있는 사람 처리
+									// 이미 들어간 사람(나 제외)에게 뿌린다. ★★★
 									for(Client user:room.userVc)
 									{
 										user.messageTo(Function.ROOMADD+"|"
@@ -202,6 +204,7 @@ public class Server implements Runnable{
 									}
 									
 									// 2) 본인 처리
+									// 위에서 먼저 뿌려놓고, 위에서 뿌린 정보에다가 내걸 더해서 그걸 받는다. ★★★
 									room.userVc.add(this);
 									messageTo(Function.ROOMIN+"|"+room.roomName+"|"
 											   +id+"|"+sex+"|"+avatar+"|"+room.bang);
@@ -212,6 +215,8 @@ public class Server implements Runnable{
 										{
 											messageTo(Function.ROOMADD+"|"
 													+user.id+"|"+user.sex+"|"+user.avatar+"|"+room.bang);
+											// messageTo 앞에 this 생략. 
+											// 나에게 상대방의 정보를 보낸다.  
 										}
 									}
 									// 3) 대기실 갱신 

@@ -553,6 +553,8 @@ public class MainForm extends JFrame implements ActionListener,Runnable,MouseLis
 					  gr.ta.setText("");
 					  gr.tf.setText("");
 					  card.show(getContentPane(), "WR");
+					  
+					 
 					  break;
 				  }
 				  case Function.KANG:
