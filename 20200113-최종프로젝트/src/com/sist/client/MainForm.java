@@ -90,7 +90,9 @@ public class MainForm extends JFrame implements ActionListener,Runnable,MouseLis
 				return;
 			}
 			
-			// 처리
+			// connection에 데이터 넣어주기
+			// 로그인 버튼 클릭했을 때, memberDAO의 isLogin 읽어온 DB에 저장되어 있는 회원의 ID/PW 일치여부를 판별
+			// ==> 일치하지 않으면 NOID, NOPWD 처리하고,
 			MemberDAO dao=new MemberDAO();
 			String result=dao.isLogin(id, pwd);
 			if(result.equals("NOID"))
@@ -106,9 +108,11 @@ public class MainForm extends JFrame implements ActionListener,Runnable,MouseLis
 				login.pf.setText("");
 				login.pf.requestFocus();
 			}
+			// ==> 일치하면 connection에 데이터를 넘겨준다. 
 			else
 			{
-				connection(result);
+				connection(result); 
+				System.out.println("로그인 버튼 클릭 시 넘겨주는 result: "+result);
 			}
 		}
 		else if(e.getSource()==wr.tf)// 대기실채팅
@@ -265,7 +269,7 @@ public class MainForm extends JFrame implements ActionListener,Runnable,MouseLis
 			in=new BufferedReader(new InputStreamReader(s.getInputStream()));
 			
 			// 로그인 데이터 보내기 
-			// 100|hong|홍길동|남자|대기실\n   이렇게 넘어감
+			// 100|hong|홍길동|남자|대기실\n   이렇게 넘어감 <== MemberDAO에서, DB값을 읽어서 넘겨줌 
 			out.write((Function.LOGIN+"|"+userData+"\n").getBytes());
 		}catch(Exception ex) {}
 		// 서버로부터 데이터를 읽기 시작 

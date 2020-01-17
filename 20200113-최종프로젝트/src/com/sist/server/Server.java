@@ -50,7 +50,7 @@ public class Server implements Runnable{
 	// 통신을 담당하는 부분 (각 클라이언트마다 따로 작업을 한다) 
 	class Client extends Thread 
 	{
-		String id,name,sex,pos;
+		String id,name,sex,pos; // 아래의 case문들에서 다 쓸 수 있게 id,name,sex,pos를 위에다가 선언해놨음 
 		int avatar;
 		// pos : 방 위치 (어느 방에 들어가있는지 확인. 디폴트는 대기실) 
 		// 통신을 하기 위해 socket필요
@@ -79,6 +79,7 @@ public class Server implements Runnable{
 				while(true)
 				{
 					String msg=in.readLine(); // 클라이언트가 전송한 값 (요청)
+					// msg에 클라이언트가 보내준 값을 넣는다. 
 					System.out.println("Client=>"+msg); // 패킷 갯수를 맞춰야. 
 					StringTokenizer st=new StringTokenizer(msg,"|"); 
 					int protocol = Integer.parseInt(st.nextToken());

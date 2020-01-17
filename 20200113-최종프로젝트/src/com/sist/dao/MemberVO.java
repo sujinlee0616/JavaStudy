@@ -31,4 +31,7 @@ public class MemberVO {
 		this.sex = sex;
 	}
 	
+	/*
+	 * VO(Value Object) : 계층간 데이터 교환 
+	*/
 }
