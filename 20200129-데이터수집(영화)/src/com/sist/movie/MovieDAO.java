@@ -85,11 +85,33 @@ public class MovieDAO {
 		{
 			getConnection();
 			String sql="INSERT INTO movie VALUES("
-					+"(SELECT NVL(MAX(mno)+1,1) FROM movie)," ;
+					+"(SELECT NVL(MAX(mno)+1,1) FROM movie),?,?,?,?,?,?,?,?,?,5)" ;
+			// 1 : 현재상영(Movie 테이블 1-37번) / 2 : 개봉예정(38-92번) 
+			// 3 : 박스오피스 주간(93-102번) / 4 : 박스오피스 월간 (103-122번) / 5 : 박스오피스 연간 (123-167번)
 			// 자동으로 mno 번호 증가하게.
-			// 맨 처음에 Null이니까 NVL 사용해서 null일 때 1 넣어줌.
+			// 맨 처음에 null이니까 NVL 사용해서 null일 때 1 넣어줌.
 			// 그 다음부터는 1씩 증가하므로 1,2,3,.... 과 같이 번호가 계속 증가함 
+			/*
+			 * private String title;
+			 * private double score;
+			 * private String genre;
+			 * private String regdate;
+			 * private String time;
+			 * private String grade;
+			 * private String director;
+			 * private String actor;
+			 * private String story;
+			*/
 			ps=conn.prepareStatement(sql);
+			ps.setString(1, vo.getTitle());
+			ps.setDouble(2, vo.getScore());
+			ps.setString(3, vo.getGenre());
+			ps.setString(4, vo.getRegdate());
+			ps.setString(5, vo.getTime());
+			ps.setString(6, vo.getGrade());
+			ps.setString(7, vo.getDirector());
+			ps.setString(8, vo.getActor());
+			ps.setString(9, vo.getStory());
 			ps.executeUpdate();
 		} catch (Exception ex) 
 		{
