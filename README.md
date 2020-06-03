@@ -1,4 +1,4 @@
-# 국비지원 개발 과정 (ko) 
+## 국비지원 개발 과정 (ko) 
  - 기간 : 2019.12.02 ~ 2020.06.01  
  - 과정명 : JAVA기반의 스마트 웹 앱콘텐츠 양성과정  
  - 훈련 기관명 : 쌍용강북교육센터 (www.sist.co.kr)   
@@ -17,7 +17,7 @@
    
     
      
-# Programming Course Supported by the South Korean Government   
+## Programming Course Supported by the South Korean Government   
  - Period: Dec 02, 2019 ~ June 01, 2020   
  - Course Name: JAVA-based Smart Web App Course  
  - Training Institution: Ssangyong Gangbuk Education Center (www.sist.co.kr)  
